@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "ChatUlaR";
+}
+
+
+<div class="container">
+    <div class="jumbotron">
+        <h1>ChatUlar</h1>
+    </div>
+</div>
+
+<div class="container" ng-app="chat-app" ng-controller="rooms">
+    <div class="row">
+        <div class="col-md-4">
+            <form class="pad-bottom" name="submit" ng-hide="toggleHide">
+                <div class="form-group">
+                    <label for="username">Sign In</label>
+                    <input class="form-control" type="text" name="username" id="username" placeholder="Enter your userame" ng-model="username.text" />
+                </div>
+                <button type="submit" class="btn btn-primary" name="submit" ng-click="toggleHide = ! toggleHide">Sign In</button>
+                <br />
+            </form>
+            <div ng-show="toggleHide">
+                <p>You are signed in as <strong>{{username.text}}</strong></p><br />
+                <label for="roomSelect">Select Room</label><br />
+                <select name="roomSelect" id="roomSelect" ng-model="roomDropDown" ng-options="i as i.RoomName for i in rooms" ng-change="showRoomHeader = true; selectRoom('{{roomDropDown.RoomName}}');">
+                    @* i.RoomName when it is a full object *@
+                    <option></option>
+                    @* bizarre AF ng-model="roomDropDown" ng-options="i as i for i in rooms" *@
+                    @*<option value="" disabled></option>
+                        <option ng-repeat="room in rooms track by $index">{{room}}</option>*@
+                </select><br /><br />
+                <form name="roomCreation">
+                    <div class="form-group">
+                        <label for="roomInput">Create Room</label>
+                        <input class="form-control" type="text" name="roomInput" id="roomInput" ng-model="newItem" placeholder="Create new room" />
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="create" ng-click="appendRooms('{{roomDropDown.RoomName}}'); showRoomHeader = true">Create</button>
+                </form><br />
+            </div>
+        </div>
+        <div class="col-md-8" ng-show="toggleHide">
+            <div style="background-color:lavender; text-align:center">
+                <h2 ng-model="welcome"></h2>
+                <h2 ng-show="showRoomHeader">{{welcome}}{{roomDropDown.RoomName}}</h2>
+            </div>
+            <div id="chatMessages" style="overflow:auto">
+                <ul ng-model="messages">
+                    <li ng-repeat="m in message track by $index">
+                        <span> <em>{{m.DateCreated}}</em> <strong ng-bind="m.UserName + ':'" ng-class="{myName: m.UserName == username.text, otherNames: m.UserName != username.text}"></strong> {{m.Message}}</span> @*ng-style="customStyle.style"*@
+                    </li>
+                </ul>
+            </div><br />
+            <div id="messageForm">
+                <form role="form">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                <input type="text" class="form-control" ng-model="newMessage" />
+                                <div class="input-group-btn">
+                                    <button type="submit" id="sendMessage" class="btn" ng-click="showNewMessage()">Send</button>
+                                </div><!-- /btn-group -->
+                            </div><!-- /input-group -->
+                        </div><!-- /.col-xs-12 -->
+                    </div><!-- /.row -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/moment.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/Chat.js"></script>
+}
