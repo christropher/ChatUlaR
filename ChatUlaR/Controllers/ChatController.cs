@@ -15,7 +15,7 @@ namespace ChatUlaR.Controllers
         {
             this._ctx = new ChatModelsContext();
         }
-
+        //nice testeroo!
         public object Get() //IEnumerable<Room>
         {
             var TheRooms = this._ctx.Rooms.Select(c => new { c.RoomName, c.Id }).ToList();
